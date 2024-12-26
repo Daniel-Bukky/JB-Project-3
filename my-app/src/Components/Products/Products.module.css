@@ -1,0 +1,29 @@
+.products{
+    display: flex;
+    flex-direction: column;
+    margin:10px;
+    gap:10px;
+}
+
+.product{
+    display: flex;
+    gap:20px; 
+    border:2px solid blueviolet;
+    border-radius: 10px;
+    margin: 10px;
+    padding: 20px;;
+}
+.product >*{
+    font-size: 20px;
+    font-weight: bold;
+    border:1px solid green;
+    padding: 10px;
+    border-radius: 10px;
+}
+.product:hover{
+    border:2px solid yellow;
+    background-color: tomato;
+    border-radius: 10px;
+    
+
+}
