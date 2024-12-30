@@ -1,107 +1,90 @@
-import { useState, useEffect } from "react";
-import { useAuth } from "../../Context/AuthContext";
-import { fetchCities } from "../../api/cityApi";
-import { ICity } from "../../models/index";
+import { useState } from 'react';
+import { TextField, Button, Container, Typography, Box } from '@mui/material';
 
-export function Register() {
-    const { register } = useAuth();
-    const [email, setEmail] = useState<string>("");
-    const [password, setPassword] = useState<string>("");
-    const [cityId, setCityId] = useState<number>(0);
-    const [birthday, setBirthday] = useState<string>("");
-    const [address, setAddress] = useState<string>("");
-    const [cities, setCities] = useState<ICity[]>([]);
-    const [error, setError] = useState<string | null>(null);
-    const [success, setSuccess] = useState<string | null>(null);
+export const Register = () => {
+  const [formData, setFormData] = useState({
+    firstName: '',
+    lastName: '',
+    email: '',
+    password: '',
+  });
 
-    // Fetch cities on component mount
-    useEffect(() => {
-        const loadCities = async () => {
-            try {
-                const cityData = await fetchCities();
-                setCities(cityData);
-            } catch (err) {
-                setError("Failed to load cities. Please try again.");
-            }
-        };
-        loadCities();
-    }, []);
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
+  };
 
-    const handleRegister = async (e: React.FormEvent) => {
-        e.preventDefault();
-        setError(null);
-        setSuccess(null);
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    console.log(formData); // Replace with actual form submission logic
+    alert("Form submitted");
+  };
 
-        if (!email || !password || !cityId || !birthday || !address) {
-            setError("All fields are required.");
-            return;
-        }
+  return (
+    <Container component="main" maxWidth="xs">
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          padding: 2,
+        }}
+      >
+        <Typography variant="h5">Register</Typography>
 
-        try {
-            await register(email, password, cityId, new Date(birthday), address);
-            setSuccess("Registration successful!");
-        } catch (err) {
-            setError("Registration failed. Please try again.");
-        }
-    };
-
-    return (
-        <div>
-            <h2>Register</h2>
-                <div>
-                    <label>Email:</label>
-                    <input
-                        type="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        required
-                    />
-                </div>
-                <div>
-                    <label>Password:</label>
-                    <input
-                        type="password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        required
-                    />
-                </div>
-                <div>
-                    <label>City:</label>
-                    <select
-                        value={cityId}
-                        onChange={(e) => setCityId(Number(e.target.value))}
-                        required
-                    >
-                        <option value="">Select a city</option>
-                        {cities.map((city) => (
-                            <option key={city.id} value={city.id}>
-                                {city.name}
-                            </option>
-                        ))}
-                    </select>
-                </div>
-                <div>
-                    <label>Birthday:</label>
-                    <input
-                        type="date"
-                        value={birthday}
-                        onChange={(e) => setBirthday(e.target.value)}
-                        required
-                    />
-                </div>
-                <div>
-                    <label>Address:</label>
-                    <input
-                        type="text"
-                        value={address}
-                        onChange={(e) => setAddress(e.target.value)}
-                        required
-                    />
-                </div>
-                {error && <p style={{ color: "red" }}>{error}</p>}
-                {success && <p style={{ color: "green" }}>{success}</p>}
-                <button onClick={handleRegister}>Register</button>
-        </div>
-    );
+        <form onSubmit={handleSubmit} style={{ width: '100%', marginTop: 1 }}>
+          <TextField
+            required
+            fullWidth
+            label="First Name"
+            name="firstName"
+            value={formData.firstName}
+            onChange={handleChange}
+            margin="normal"
+          />
+          <TextField
+            required
+            fullWidth
+            label="Last Name"
+            name="lastName"
+            value={formData.lastName}
+            onChange={handleChange}
+            margin="normal"
+          />
+          <TextField
+            required
+            fullWidth
+            label="Email"
+            type="email"
+            name="email"
+            value={formData.email}
+            onChange={handleChange}
+            margin="normal"
+          />
+          <TextField
+            required
+            fullWidth
+            label="Password"
+            type="password"
+            name="password"
+            value={formData.password}
+            onChange={handleChange}
+            margin="normal"
+          />
+          <Button
+            type="submit"
+            variant="contained"
+            color="primary"
+            fullWidth
+            sx={{ mt: 2 }}
+          >
+            Register
+          </Button>
+        </form>
+      </Box>
+    </Container>
+  );
 }

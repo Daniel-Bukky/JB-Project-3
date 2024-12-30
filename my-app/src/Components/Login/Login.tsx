@@ -11,7 +11,7 @@ export function Login(){
 
 
     const handleLogin = async (e:React.FormEvent)=>{
-            //e.preventDefault(); // to avoid refresh 
+            e.preventDefault(); // to avoid refresh 
             setError(null); 
             setSuccess(null);
             if(!email || !password){
