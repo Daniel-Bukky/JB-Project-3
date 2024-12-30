@@ -13,6 +13,6 @@ def login_user_route():
     return login_user(request.json)
 
 @user_bp.route("/users", methods=["GET"])
-@jwt_required()
+# @jwt_required()
 def get_all_users_route():
     return fetch_all_users()

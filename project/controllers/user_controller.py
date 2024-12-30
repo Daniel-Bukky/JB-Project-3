@@ -37,6 +37,7 @@ def login_user(data):
 
 def fetch_all_users():
     users = get_all_users()
+    print(users)
     return jsonify([{
         "id": user[0],
         "firstname": user[1],

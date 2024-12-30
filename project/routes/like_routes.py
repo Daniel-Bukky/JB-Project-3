@@ -1,31 +1,25 @@
 from flask import Blueprint, request
-from controllers.country_controller import create_country, fetch_all_countries , fetch_country_by_id, del_country_by_id, update_country
+from controllers.like_controller import create_like, fetch_all_likes , fetch_like, del_like
 
-#TODO change names and whatever
+like_bp = Blueprint("like_routes", __name__)
 
-country_bp = Blueprint("country_routes", __name__)
+@like_bp.route("/like", methods=["POST"])
+def add_like_route():
+    return create_like(request.json)
 
-@country_bp.route("/countries", methods=["POST"])
-def add_country_route():
-    return create_country(request.json)
-
-@country_bp.route("/countries", methods=["GET"])
-def get_all_countries_route():
-    return fetch_all_countries()
+@like_bp.route("/likes", methods=["GET"])
+def get_all_likes_route():
+    return fetch_all_likes()
 
 
-@country_bp.route("/country/<int:id>", methods=["GET"])
-def get_country_by_id(id):
-    return fetch_country_by_id(id)
+@like_bp.route("/like/<int:user_id>/<int:vacation_id>", methods=["GET"])
+def get_like(user_id, vacation_id):
+    return fetch_like(user_id, vacation_id)
 
 
-@country_bp.route("/country/<int:id>", methods=["DELETE"])
-def delete_country_by_id(id):
-    return del_country_by_id(id)
-
-@country_bp.route("/country/<int:id>", methods=["PUT"])
-def update_country_by_id(id):
-    return update_country(id, request.json)
+@like_bp.route("/like/<int:user_id>/<int:vacation_id>", methods=["DELETE"])
+def delete_like(user_id, vacation_id):
+    return del_like(user_id, vacation_id)
 
 
 

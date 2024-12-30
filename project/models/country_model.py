@@ -13,7 +13,7 @@ def add_country(name):
 def get_all_countries():
     conn = get_db_connection()
     cur = conn.cursor()
-    cur.execute("SELECT * FROM countries")
+    cur.execute("SELECT * FROM countries order by country_name")
     countries = cur.fetchall()
     cur.close()
     conn.close()

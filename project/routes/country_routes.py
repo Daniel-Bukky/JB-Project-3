@@ -3,7 +3,7 @@ from controllers.country_controller import create_country, fetch_all_countries ,
 
 country_bp = Blueprint("country_routes", __name__)
 
-@country_bp.route("/countries", methods=["POST"])
+@country_bp.route("/country", methods=["POST"])
 def add_country_route():
     return create_country(request.json)
 
