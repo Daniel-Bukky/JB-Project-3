@@ -1,56 +1,68 @@
-import { createContext, useState, ReactNode, useContext } from "react";
+import { createContext, useState, ReactNode } from "react";
 import { IUser } from "../models/index";
 import { login, register } from "../api/authApi";
+import { useNavigate } from "react-router-dom";
 
 interface AuthContextType {
     user: IUser | null;
     login: (email: string, password: string) => Promise<void>;
-    register: (email: string, password: string, cityId: number, birthday: Date, address: string) => Promise<void>;
+    register: (firstname: string, lastname: string, email: string, password: string) => Promise<void>;
+    logout: () => void;
 }
 
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const [user, setUser] = useState<IUser | null>(null);
-    const [error, setError] = useState<string | null>(null);
+    const navigate = useNavigate();
 
     const loginHandler = async (email: string, password: string) => {
         try {
             const loggedInUser = await login(email, password);
             setUser(loggedInUser);
-            setError(null);
+            return loggedInUser;
         } catch (error) {
-            setError("Login failed. Please check your credentials.");
+            throw error;
         }
     };
 
     const registerHandler = async (
+        firstname: string,
+        lastname: string,
         email: string,
-        password: string,
-        cityId: number,
-        birthday: Date,
-        address: string
+        password: string
     ) => {
         try {
-            const registeredUser = await register(email, password, cityId, birthday, address);
-            console.log(registeredUser);
-            setError(null);
+            await register(firstname, lastname, email, password);
+            alert('Registration successful! Please log in.');
+            navigate('/login');
         } catch (error) {
-            setError("Registration failed. Please try again.");
+            throw error;
         }
     };
 
+    const logoutHandler = () => {
+        setUser(null);
+        localStorage.removeItem("token");
+        navigate('/');
+    };
+
     return (
-        <AuthContext.Provider value={{ user, login: loginHandler, register: registerHandler }} >
+        <AuthContext.Provider value={{ 
+            user, 
+            login: loginHandler, 
+            register: registerHandler,
+            logout: logoutHandler 
+        }}>
             {children}
         </AuthContext.Provider>
     );
 };
 
-export const useAuth = () => {
-    const context = useContext(AuthContext);
-    if (!context) {
-        throw new Error("useAuth must be used within an AuthProvider");
-    }
-    return context;
-};
+// export const useAuth = () => {
+//     const context = useContext(AuthContext);
+//     if (!context) {
+//         throw new Error("useAuth must be used within an AuthProvider");
+//     }
+//     return context;
+// };

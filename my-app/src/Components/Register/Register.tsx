@@ -1,13 +1,18 @@
-import { useState } from 'react';
-import { TextField, Button, Container, Typography, Box } from '@mui/material';
+import { useState, useContext } from 'react';
+import { TextField, Button, Container, Typography, Box, Alert } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
+import { AuthContext } from '../../Context/AuthContext';
 
 export const Register = () => {
   const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
+    firstname: '',
+    lastname: '',
     email: '',
     password: '',
   });
+  const [error, setError] = useState<string | null>(null);
+  const navigate = useNavigate();
+  const auth = useContext(AuthContext);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -17,74 +22,100 @@ export const Register = () => {
     });
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log(formData); // Replace with actual form submission logic
-    alert("Form submitted");
+    setError(null);
+
+    try {
+      if (!auth) {
+        throw new Error('Auth context is not available');
+      }
+
+      if (Object.values(formData).some(value => !value)) {
+        throw new Error('Please fill in all fields');
+      }
+
+      await auth.register(
+        formData.firstname,
+        formData.lastname,
+        formData.email,
+        formData.password
+      );
+      navigate('/');
+    } catch (err: any) {
+      setError(err.response?.data?.message || 'Registration failed');
+      return;
+    }
   };
 
   return (
     <Container component="main" maxWidth="xs">
-      <Box
-        sx={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          padding: 2,
-        }}
-      >
-        <Typography variant="h5">Register</Typography>
+      <Box sx={{
+        marginTop: 8,
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+      }}>
+        <Typography component="h1" variant="h5">
+          Register
+        </Typography>
 
-        <form onSubmit={handleSubmit} style={{ width: '100%', marginTop: 1 }}>
+        {error && (
+          <Alert severity="error" sx={{ width: '100%', mt: 2 }}>
+            {error}
+          </Alert>
+        )}
+
+        <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1, width: '100%' }}>
           <TextField
+            margin="normal"
             required
             fullWidth
+            name="firstname"
             label="First Name"
-            name="firstName"
-            value={formData.firstName}
+            autoFocus
+            value={formData.firstname}
             onChange={handleChange}
-            margin="normal"
           />
           <TextField
+            margin="normal"
             required
             fullWidth
+            name="lastname"
             label="Last Name"
-            name="lastName"
-            value={formData.lastName}
+            value={formData.lastname}
             onChange={handleChange}
-            margin="normal"
           />
           <TextField
+            margin="normal"
             required
             fullWidth
-            label="Email"
-            type="email"
             name="email"
+            label="Email Address"
+            type="email"
             value={formData.email}
             onChange={handleChange}
-            margin="normal"
           />
           <TextField
+            margin="normal"
             required
             fullWidth
+            name="password"
             label="Password"
             type="password"
-            name="password"
             value={formData.password}
             onChange={handleChange}
-            margin="normal"
           />
           <Button
             type="submit"
-            variant="contained"
-            color="primary"
             fullWidth
-            sx={{ mt: 2 }}
+            variant="contained"
+            sx={{ mt: 3, mb: 2 }}
           >
             Register
           </Button>
-        </form>
+        </Box>
       </Box>
     </Container>
   );
-}
+};

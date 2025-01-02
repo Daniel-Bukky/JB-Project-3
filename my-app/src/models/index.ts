@@ -1,19 +1,22 @@
-export interface IProduct {
+export interface IVacation {
     id: number,
+    start_date: Date,
+    end_date: Date,
+    description: string,
     price: number,
-    name: string,
-    imageUrl: string
+    image_url: string
 }
 
 export interface IUser {
     id: number,
+    firstname: string,
+    lastname: string,
     email: string,
-    cityId: number,
-    birthday: Date,
-    address: string
+    password: string,
+    role: number
 }
 
-export interface ICity {
+export interface ICountry {
     id: number,
-    name: string
+    country_name: string
 }

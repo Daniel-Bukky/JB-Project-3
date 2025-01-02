@@ -3,14 +3,15 @@ from models.vacation_model import add_vacation, get_vacation_by_id, get_all_vaca
 from datetime import date, datetime
 
 def create_vacation(data):
-    location_id = data.get("location_id")
-    start_date = data.get("start_date")
-    end_date = data.get("end_date")
+    print(data)
     description = data.get("description")
     price = data.get("price")
-    img_url = data.get("img_url")
+    img_url = data.get("image_url")
+    start_date = data.get("start_date")
+    end_date = data.get("end_date")
+    country_id = data.get("country_id")
 
-    if not location_id:
+    if not country_id:
         return jsonify({"error": "vacation name is required"}), 400
     if not start_date:
         return jsonify({"error": "vacation start date is required"}), 400
@@ -20,21 +21,21 @@ def create_vacation(data):
         return jsonify({"error": "vacation price is required"}), 400
     if not img_url:
         return jsonify({"error": "vacation image_url is required"}), 400
-    start_date = datetime.strptime(start_date, f"%d/%m/%Y").date()
-    end_date = datetime.strptime(end_date, f"%d/%m/%Y").date()
-    vacation_id = add_vacation(location_id, start_date, end_date, description, price, img_url)
-    return jsonify({"message": "vacation added successfully!", "procuct_id": vacation_id}), 201
+    start_date = datetime.strptime(start_date, f"%Y-%m-%dT%H:%M:%S.%fZ")
+    end_date = datetime.strptime(end_date, f"%Y-%m-%dT%H:%M:%S.%fZ")
+    vacation_id = add_vacation(country_id, start_date, end_date, description, price, img_url)
+    return jsonify({"message": "vacation added successfully!", "vacation_id": vacation_id}), 201
 
 def fetch_all_vacations():
     vacations= get_all_vacations()
-    return jsonify([{"id": vacation[0], "location_id": vacation[1] , "start_date": vacation[2] ,"end_date": vacation[3] ,"description":vacation[4],"price": vacation[5] ,"image_url": vacation[6] ,} for vacation in vacations]), 200
+    return jsonify([{"id": vacation[0], "country_id": vacation[1] , "start_date": vacation[2] ,"end_date": vacation[3] ,"description":vacation[4],"price": vacation[5] ,"image_url": vacation[6] ,} for vacation in vacations]), 200
 
 
 def fetch_vacation_by_id(id):
     vacation = get_vacation_by_id(id)
     if not vacation:
         return jsonify({"error":"vacation not found"}), 404
-    return jsonify({"id": vacation[0], "location_id": vacation[1] , "start_date": vacation[2] ,"end_date": vacation[3] ,"description":vacation[4],"price": vacation[5] ,"image_url": vacation[6] ,}), 200
+    return jsonify({"id": vacation[0], "country_id": vacation[1] , "start_date": vacation[2] ,"end_date": vacation[3] ,"description":vacation[4],"price": vacation[5] ,"image_url": vacation[6] ,}), 200
 
 
 def remove_vacation_by_id(id):
@@ -44,13 +45,13 @@ def remove_vacation_by_id(id):
     return jsonify({"id": id, "success": "deleted"}), 200
 
 def update_vacation_by_id(id, data):
-    location_id = data.get("location_id")
+    country_id = data.get("country_id")
     start_date = data.get("start_date")
     end_date = data.get("end_date")
     description = data.get("description")
     price = data.get("price")
-    img_url = data.get("img_url")
-    if not location_id:
+    img_url = data.get("image_url")
+    if not country_id:
         return jsonify({"error":"vacation name is require"}), 400 
     if not start_date:
         return jsonify({"error":"vacation start date is require"}), 400 

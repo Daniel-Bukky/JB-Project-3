@@ -1,58 +1,99 @@
-import { useAuth } from "../../Context/AuthContext"
-import { useState } from "react"
-import * as React from "react";
-export function Login(){
+import { useState, useContext } from 'react';
+import { TextField, Button, Container, Typography, Box, Alert } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
+import { AuthContext } from '../../Context/AuthContext';
 
-    const {login} = useAuth(); 
-    const [email, setEmail] = useState<string>("");
-    const [password, setPassword] =useState<string>("")
-    const [error, setError] = useState<string|null>(null)
-    const [success, setSuccess] = useState<string|null>(null)
+export const Login = () => {
+  const [formData, setFormData] = useState({
+    email: '',
+    password: '',
+  });
+  const [error, setError] = useState<string | null>(null);
+  const navigate = useNavigate();
+  const auth = useContext(AuthContext);
 
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
+  };
 
-    const handleLogin = async (e:React.FormEvent)=>{
-            e.preventDefault(); // to avoid refresh 
-            setError(null); 
-            setSuccess(null);
-            if(!email || !password){
-                setError("Email and password are required")
-                return;
-            }
-            try{
-                let data = await login(email, password)
-                console.log(data)
-                setSuccess("Login successfull")
-            }
-            catch(err){
-                setError("Login fail, please check your cardentials and try again")
-            }
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setError(null);
+
+    try {
+      if (!formData.email || !formData.password) {
+        throw new Error('Please fill in all fields');
+      }
+
+      if (!auth) {
+        throw new Error('Auth context is not available');
+      }
+
+      await auth.login(formData.email, formData.password);
+      navigate('/');
+    } catch (err: any) {
+      setError(err.response?.data?.message || 'Login failed');
+      return;
     }
-    return(
-        <div>
-            <h2>Login</h2>
-                <div>
-                    <label>Email:</label>
-                    <input
-                        type="email"
-                        value={email}
-                        onChange={(e)=>setEmail(e.target.value)}
-                        placeholder="email"
-                        required 
-                    ></input>
-                </div>
-                <div>
-                    <label>Password:</label>
-                    <input
-                        type="password"
-                        value={password}
-                        placeholder="password"
-                        onChange={(e)=>setPassword(e.target.value)}
-                        required 
-                    ></input>
-                </div>
-                {error && <p style={{color:"red"}}>{error}</p>}
-                {success && <p style={{color:"green"}}>{success}</p>}
-                <button onClick={handleLogin}>Login</button>
-        </div>
-    )
-}
+  };
+
+  return (
+    <Container component="main" maxWidth="xs">
+      <Box sx={{
+        marginTop: 8,
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+      }}>
+        <Typography component="h1" variant="h5">
+          Login
+        </Typography>
+
+        {error && (
+          <Alert severity="error" sx={{ width: '100%', mt: 2 }}>
+            {error}
+          </Alert>
+        )}
+
+        <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1, width: '100%' }}>
+          <TextField
+            margin="normal"
+            required
+            fullWidth
+            id="email"
+            label="Email Address"
+            name="email"
+            autoComplete="email"
+            autoFocus
+            value={formData.email}
+            onChange={handleChange}
+          />
+          <TextField
+            margin="normal"
+            required
+            fullWidth
+            name="password"
+            label="Password"
+            type="password"
+            id="password"
+            autoComplete="current-password"
+            value={formData.password}
+            onChange={handleChange}
+          />
+          <Button
+            type="submit"
+            fullWidth
+            variant="contained"
+            sx={{ mt: 3, mb: 2 }}
+          >
+            Sign In
+          </Button>
+        </Box>
+      </Box>
+    </Container>
+  );
+};

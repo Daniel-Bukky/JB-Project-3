@@ -18,6 +18,7 @@ def create_user(data):
     return jsonify({"message": "User registered successfully!", "user_id": user_id}), 201
 
 def login_user(data):
+    print(fetch_all_users())
     email = data.get("email")
     password = data.get("password")
 
@@ -28,12 +29,12 @@ def login_user(data):
     if not user:
         return jsonify({"error": "Invalid email or password"}), 401
 
-    user_id, hashed_password = user
+    user_id, hashed_password, firstname, lastname, role = user
     if not bcrypt.check_password_hash(hashed_password, password):
         return jsonify({"error": "Invalid email or password"}), 401
 
     token = create_access_token(identity=user_id)
-    return jsonify({"token": token}), 200
+    return jsonify({"token": token, "firstname": firstname, "lastname":lastname, "role": role}), 200
 
 def fetch_all_users():
     users = get_all_users()

@@ -6,7 +6,7 @@ export function Menu():JSX.Element{
         <nav  className={css.Menu}>
             <Link className={css.link} to="/">Home</Link>
             <Link className={css.link} to="/login">Login</Link>
-            <Link className={css.link} to="/products">Products</Link>
+            <Link className={css.link} to="/vacations">Vacations</Link>
             <Link className={css.link} to="/register">Register</Link>
 
         </nav>

@@ -5,7 +5,7 @@ from controllers.vacation_controller import create_vacation, fetch_all_vacations
 vacation_bp = Blueprint("vacation_routes", __name__)
 
 @vacation_bp.route("/vacation", methods=["POST"])
-def add_procuct_route():
+def add_vacation_route():
     return create_vacation(request.json)
 
 @vacation_bp.route("/vacations", methods=["GET"])

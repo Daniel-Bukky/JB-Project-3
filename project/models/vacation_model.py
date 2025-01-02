@@ -1,12 +1,12 @@
 from models.db_config import get_db_connection
 
-def add_vacation(location_id, start_date, end_date, description, price, img_url):
+def add_vacation(country_id, start_date, end_date, description, price, img_url):
     conn = get_db_connection()
     cur = conn.cursor()
     cur.execute("""
         INSERT INTO vacations (location_id, start_date, end_date, description, price, img_url) 
         VALUES (%s, %s, %s, %s, %s, %s) RETURNING vacation_id
-    """, (location_id, start_date, end_date, description, price, img_url,))
+    """, (country_id, start_date, end_date, description, price, img_url,))
     vacation_id = cur.fetchone()[0]
     conn.commit()
     cur.close()
@@ -44,10 +44,10 @@ def delete_vacation_by_id(id):
     conn.close()
     return delete_id
 
-def update_vacation_by_id(vacation_id, location_id, start_date, end_date, description, price, img_url):
+def update_vacation_by_id(vacation_id, country_id, start_date, end_date, description, price, img_url):
     conn = get_db_connection()
     cur = conn.cursor()
-    cur.execute("UPDATE vacations SET location_id = (%s) , start_date=(%s) , end_date=(%s) , description=(%s), price=(%s), img_url=(%s) where id = (%s) RETURNING id", (location_id, start_date, end_date, description, price, img_url, vacation_id))
+    cur.execute("UPDATE vacations SET location_id = (%s) , start_date=(%s) , end_date=(%s) , description=(%s), price=(%s), img_url=(%s) where id = (%s) RETURNING id", (country_id, start_date, end_date, description, price, img_url, vacation_id))
     update_row = cur.fetchone()
     conn.commit()
     cur.close()

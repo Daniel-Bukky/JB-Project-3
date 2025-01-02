@@ -16,7 +16,7 @@ def register_user(firstname, lastname, email, hashed_password):
 def get_user_by_email(email):
     conn = get_db_connection()
     cur = conn.cursor()
-    cur.execute("SELECT user_id, password FROM users WHERE email = %s", (email,))
+    cur.execute("SELECT user_id, password, firstname, lastname, role_id FROM users WHERE email = %s", (email,))
     user = cur.fetchone()
     cur.close()
     conn.close()
