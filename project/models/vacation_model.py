@@ -28,6 +28,7 @@ def get_all_vacations():
     cur.execute("""
         SELECT *
         FROM vacations
+        ORDER BY vacation_id
     """)
     vacations = cur.fetchall()
     cur.close()
@@ -47,12 +48,27 @@ def delete_vacation_by_id(id):
 def update_vacation_by_id(vacation_id, country_id, start_date, end_date, description, price, img_url):
     conn = get_db_connection()
     cur = conn.cursor()
-    cur.execute("UPDATE vacations SET location_id = (%s) , start_date=(%s) , end_date=(%s) , description=(%s), price=(%s), img_url=(%s) where id = (%s) RETURNING id", (country_id, start_date, end_date, description, price, img_url, vacation_id))
-    update_row = cur.fetchone()
-    conn.commit()
-    cur.close()
-    conn.close()
-    return update_row
-
-
-
+    try:
+        cur.execute("""
+            UPDATE vacations 
+            SET location_id = %s, 
+                start_date = %s, 
+                end_date = %s, 
+                description = %s, 
+                price = %s, 
+                img_url = %s 
+            WHERE vacation_id = %s 
+            RETURNING vacation_id
+        """, (country_id, start_date, end_date, description, price, img_url, vacation_id))
+        
+        update_row = cur.fetchone()
+        conn.commit()
+        
+        return update_row[0] if update_row else None
+    except Exception as e:
+        print(f"Database error: {str(e)}")
+        conn.rollback()
+        return None
+    finally:
+        cur.close()
+        conn.close()

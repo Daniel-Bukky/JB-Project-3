@@ -15,14 +15,20 @@ def create_like(data):
 
 def fetch_all_likes():
     likes = get_all_likes()
-    return jsonify([{"user_id": like[0], "vacation_id": like[1]} for like in likes]), 200
+    
+
+    return jsonify(likes)
 
 
-def fetch_like(user_id, vacation_id):
-    like = get_like(user_id, vacation_id)
-    if not like:
-        return jsonify({"error": "like not found"}), 404
-    return jsonify({"user_id": like[0], "vacation_id": like[1]}), 200
+def fetch_likes_by_user_id(user_id):
+    # Call the fetch_all_likes function and get the data from the response
+    likes_response = fetch_all_likes()
+    likes = likes_response.get_json()  # Extract the data from the response
+
+    # Now you can filter the likes by user_id and structure the response
+    filtered_likes = [{'user_id': userlikes[0], 'vacation_id': userlikes[1]} for userlikes in likes if userlikes[0] == user_id]
+
+    return jsonify(filtered_likes), 200
 
 
 def del_like(user_id, vacation_id):

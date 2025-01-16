@@ -60,9 +60,16 @@ export function Layout() {
         <Box sx={{ 
             display: 'flex',
             flexDirection: 'column',
-            minHeight: '100vh',
-            width: '100%',
-            alignItems: 'center'
+            height: '100vh',
+            width: '100vw',
+            alignItems: 'stretch',
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            overflow: 'hidden',
+            boxSizing: 'border-box'
         }}>
             <AppBar position="fixed" sx={{ width: '100%' }}>
                 <Toolbar sx={{ 
@@ -183,14 +190,18 @@ export function Layout() {
 
             <Container 
                 component="main" 
-                maxWidth="lg"
+                maxWidth={false}
+                disableGutters
                 sx={{ 
-                    mt: 8, 
-                    p: 3,
+                    mt: 8,
                     width: '100%',
                     display: 'flex',
                     flexDirection: 'column',
-                    alignItems: 'center'
+                    alignItems: 'stretch',
+                    flex: 1,
+                    overflow: 'auto',
+                    overflowX: 'hidden',
+                    p: 0
                 }}
             >
                 <Routing />

@@ -44,24 +44,32 @@ def remove_vacation_by_id(id):
         return jsonify({"error":"vacation not found"}), 404 
     return jsonify({"id": id, "success": "deleted"}), 200
 
-def update_vacation_by_id(id, data):
+def modify_vacation_by_id(id, data):
     country_id = data.get("country_id")
     start_date = data.get("start_date")
     end_date = data.get("end_date")
     description = data.get("description")
     price = data.get("price")
     img_url = data.get("image_url")
+    
+    # Validation to avoid passing None to SQL
     if not country_id:
-        return jsonify({"error":"vacation name is require"}), 400 
+        return jsonify({"error": "vacation country_id is required"}), 400
     if not start_date:
-        return jsonify({"error":"vacation start date is require"}), 400 
+        return jsonify({"error": "vacation start date is required"}), 400
     if not end_date:
-        return jsonify({"error":"vacation end date is require"}), 400 
+        return jsonify({"error": "vacation end date is required"}), 400
     if not price:
-        return jsonify({"error":"vacation price is require"}), 400 
+        return jsonify({"error": "vacation price is required"}), 400
     if not img_url:
-        return jsonify({"error":"vacation image_url is require"}), 400 
-    vacation_id = update_vacation_by_id(id, data)
+        return jsonify({"error": "vacation image_url is required"}), 400
+
+    # Correct call with all required arguments
+    vacation_id = update_vacation_by_id(
+        id, country_id, start_date, end_date, description, price, img_url
+    )
+    
     if vacation_id is None:
-        return jsonify({"error":"vacation not found"})
-    return jsonify({"message":"Vacation updated successfully", "vacation_id":vacation_id}), 200
+        return jsonify({"error": "vacation not found"}), 404
+    
+    return jsonify({"message": "Vacation updated successfully", "vacation_id": vacation_id}), 200

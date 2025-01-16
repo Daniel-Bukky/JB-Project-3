@@ -1,6 +1,6 @@
 from flask import Blueprint, request
 from flask_jwt_extended import jwt_required
-from controllers.vacation_controller import create_vacation, fetch_all_vacations, fetch_vacation_by_id, remove_vacation_by_id, update_vacation_by_id
+from controllers.vacation_controller import create_vacation, fetch_all_vacations, fetch_vacation_by_id, remove_vacation_by_id, modify_vacation_by_id
 
 vacation_bp = Blueprint("vacation_routes", __name__)
 
@@ -21,5 +21,5 @@ def del_vacation_route(id):
     return remove_vacation_by_id(id)
 
 @vacation_bp.route("/vacation/<int:id>", methods=["PUT"])
-def update_vacation_route(id):
-    return update_vacation_by_id(id, request.json)
+def upd_vacation_route(id):
+    return modify_vacation_by_id(id, request.json)

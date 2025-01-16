@@ -85,9 +85,9 @@ export const CreateVacation = () => {
             const vacationData = {
                 description: formData.description,
                 price: Number(formData.price),
-                image_url: formData.image_url,
-                start_date: formData.start_date,
-                end_date: formData.end_date,
+                image_url: formData.image_url + '.jpg',
+                start_date: new Date(formData.start_date.setHours(12, 0, 0, 0)),
+                end_date: new Date(formData.end_date.setHours(12, 0, 0, 0)),
                 country_id: Number(formData.country_id)
             };
 

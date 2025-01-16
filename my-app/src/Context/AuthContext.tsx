@@ -2,10 +2,11 @@ import { createContext, useState, ReactNode } from "react";
 import { IUser } from "../models/index";
 import { login, register } from "../api/authApi";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 interface AuthContextType {
     user: IUser | null;
-    login: (email: string, password: string) => Promise<void>;
+    login: (email: string, password: string) => Promise<IUser | null>;
     register: (firstname: string, lastname: string, email: string, password: string) => Promise<void>;
     logout: () => void;
 }
@@ -18,10 +19,26 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     const loginHandler = async (email: string, password: string) => {
         try {
-            const loggedInUser = await login(email, password);
-            setUser(loggedInUser);
-            return loggedInUser;
+            const response = await login(email, password);
+            
+            if (response.token) {
+                console.log('Setting token:', response.token);
+                localStorage.setItem('token', response.token);
+                axios.defaults.headers.common['Authorization'] = `Bearer ${response.token}`;
+                
+                const userData = {
+                    firstname: response.user.firstname,
+                    lastname: response.user.lastname,
+                    role: response.user.role,
+                    id: response.user.id
+                };
+                
+                setUser(userData);
+                return userData;
+            }
+            return null;
         } catch (error) {
+            console.error('Login error:', error);
             throw error;
         }
     };
@@ -43,7 +60,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     const logoutHandler = () => {
         setUser(null);
-        localStorage.removeItem("token");
+        localStorage.removeItem('token');
         navigate('/');
     };
 

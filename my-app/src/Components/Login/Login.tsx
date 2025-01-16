@@ -1,4 +1,4 @@
-import { useState, useContext } from 'react';
+import { useState, useContext, useEffect } from 'react';
 import { TextField, Button, Container, Typography, Box, Alert } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../Context/AuthContext';
@@ -33,13 +33,20 @@ export const Login = () => {
         throw new Error('Auth context is not available');
       }
 
-      await auth.login(formData.email, formData.password);
+      const user = await auth.login(formData.email, formData.password);
+      console.log('User after login:', user);
       navigate('/');
     } catch (err: any) {
       setError(err.response?.data?.message || 'Login failed');
       return;
     }
   };
+
+  useEffect(() => {
+    if (auth?.user) {
+      console.log('User state updated:', auth.user);
+    }
+  }, [auth?.user]);
 
   return (
     <Container component="main" maxWidth="xs">

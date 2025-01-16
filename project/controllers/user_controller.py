@@ -33,7 +33,7 @@ def login_user(data):
     if not bcrypt.check_password_hash(hashed_password, password):
         return jsonify({"error": "Invalid email or password"}), 401
 
-    token = create_access_token(identity=user_id)
+    token = create_access_token(identity=str(user_id))
     return jsonify({"token": token, "firstname": firstname, "lastname":lastname, "role": role}), 200
 
 def fetch_all_users():

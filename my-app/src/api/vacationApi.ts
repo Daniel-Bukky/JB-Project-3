@@ -7,14 +7,13 @@ export const fetchVacations = async():Promise<IVacation[]>=>{
 }
 
 export const updateVacation = async(id:number,vacation:Omit<IVacation,"id">)=>{
-    const response = await axios.put(`/vacation/${id}`, vacation);
+    const response = await axios.put(`http://127.0.0.1:5000/vacation/${id}`, vacation);
     console.log(vacation);
     return response.data 
 }
 
 export const deleteVacation = async(id:number)=>{
-
-    const response = await axios.delete(`/vacations/${id}`);
+    const response = await axios.delete(`http://127.0.0.1:5000/vacation/${id}`);
     return response.data 
 }
 
