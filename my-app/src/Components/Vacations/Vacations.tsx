@@ -151,7 +151,8 @@ export default function Vacations() {
                         <Grid item
                             key={vacation.id} 
                             xs={12}
-                            md={4}
+                            md={6}
+                            lg={4}
                             sx={{
                                 display: 'flex',
                                 justifyContent: 'center'
