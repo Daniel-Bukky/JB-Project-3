@@ -29,7 +29,7 @@ def get_like(user_id, vacation_id):
 def delete_like(user_id, vacation_id):
     conn = get_db_connection()
     cur = conn.cursor()
-    cur.execute("DELETE * FROM likes WHERE user_id = %s AND vacation_id = %s", (user_id, vacation_id))
+    cur.execute("DELETE FROM likes WHERE user_id = %s AND vacation_id = %s", (user_id, vacation_id))
     rows = cur.rowcount
     conn.commit()
     cur.close()

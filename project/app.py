@@ -28,7 +28,20 @@ app.config['JWT_DECODE_ISSUER'] = None
 jwt = JWTManager(app)
 
 # Enable CORS for the app
-CORS(app)
+CORS(app, 
+     resources={r"/*": {
+         "origins": ["http://localhost:5173"],
+         "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+         "allow_headers": ["Content-Type", "Authorization", "Access-Control-Allow-Origin"],
+         "expose_headers": ["Content-Type", "Authorization"],
+         "supports_credentials": True,
+         "send_wildcard": False,
+         "max_age": 86400  # Cache preflight requests for 24 hours
+     }},
+     allow_headers=["Content-Type", "Authorization"],
+     expose_headers=["Content-Type", "Authorization"],
+     supports_credentials=True
+)
 
 @app.route('/user-data', methods=['GET'])
 @jwt_required()

@@ -38,6 +38,12 @@ export function Vacations() {
 
     useEffect(() => {
         const initializeLikes = async () => {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                console.log('No token found, skipping likes initialization');
+                return;
+            }
+
             try {
                 const userData = await getUserData();
                 if (!userData?.user_id) {
@@ -126,12 +132,14 @@ export function Vacations() {
                 maxWidth="xl" 
                 disableGutters 
                 sx={{ 
-                    pb: 4
+                    pb: 4,
+                    pl: 4,
+                    pr: 4
                 }}
             >
                 <Grid 
                     container 
-                    spacing={4}
+                    spacing={2}
                     sx={{
                         display: 'flex',
                         justifyContent: 'center',
@@ -164,11 +172,17 @@ export function Vacations() {
                                     image={vacation.image_url}
                                     alt="Vacation destination"
                                     sx={{
-                                        objectFit: 'contain',
-                                        bgcolor: 'background.paper'
+                                        objectFit: 'cover',
+                                        bgcolor: 'background.paper',
+                                        mt: 0,
+                                        pt: 0
                                     }}
                                 />
-                                <CardContent sx={{ flexGrow: 1 }}>
+                                <CardContent sx={{ 
+                                    flexGrow: 1,
+                                    display: 'flex',
+                                    flexDirection: 'column'
+                                }}>
                                     <Box sx={{ 
                                         display: 'flex', 
                                         alignItems: 'center', 
@@ -182,7 +196,7 @@ export function Vacations() {
                                             ${vacation.price}
                                         </Typography>
                                     </Box>
-                                    <Typography>
+                                    <Typography sx={{ mb: 'auto' }}>
                                         {vacation.description}
                                     </Typography>
                                     <Box sx={{ mt: 2 }}>
@@ -218,12 +232,14 @@ export function Vacations() {
                                             </>
                                         )}
                                     </Box>
-                                    <IconButton 
-                                        color={likedVacations.includes(vacation.id) ? "error" : "default"}
-                                        onClick={() => handleLike(vacation.id)}
-                                    >
-                                        <FavoriteIcon />
-                                    </IconButton>
+                                    {auth?.user && (
+                                        <IconButton 
+                                            color={likedVacations.includes(vacation.id) ? "error" : "default"}
+                                            onClick={() => handleLike(vacation.id)}
+                                        >
+                                            <FavoriteIcon />
+                                        </IconButton>
+                                    )}
                                 </CardActions>
                             </Card>
                         </Grid>

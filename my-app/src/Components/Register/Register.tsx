@@ -90,9 +90,11 @@ export const Register = () => {
             margin="normal"
             required
             fullWidth
-            name="email"
+            id="email"
             label="Email Address"
-            type="email"
+            name="email"
+            autoComplete="new-email"
+            autoFocus
             value={formData.email}
             onChange={handleChange}
           />
@@ -103,6 +105,8 @@ export const Register = () => {
             name="password"
             label="Password"
             type="password"
+            id="password"
+            autoComplete="new-password"
             value={formData.password}
             onChange={handleChange}
           />
