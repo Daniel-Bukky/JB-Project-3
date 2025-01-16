@@ -3,7 +3,7 @@ import { TextField, Button, Container, Typography, Box, Alert } from '@mui/mater
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../Context/AuthContext';
 
-export const Login = () => {
+export default function Login() {
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -103,4 +103,4 @@ export const Login = () => {
       </Box>
     </Container>
   );
-};
+}

@@ -12,7 +12,7 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import { getUserData } from "../../api/dataApi";
 import { getLikesbyUserId, unlikeVacation, likeVacation } from "../../api/likesApi";
 
-export function Vacations() {
+export default function Vacations() {
     const [vacations, setVacations] = useState<IVacation[]>([]);
     const [countries, setCountries] = useState<ICountry[]>([]);
     const [likedVacations, setLikedVacations] = useState<number[]>([]);
@@ -124,8 +124,7 @@ export function Vacations() {
             display: 'flex', 
             justifyContent: 'center', 
             width: '100%',
-            minHeight: '100vh',
-            overflow: 'hidden',
+            overflow: 'visible',
             padding: '0 !important'
         }}>
             <Container 

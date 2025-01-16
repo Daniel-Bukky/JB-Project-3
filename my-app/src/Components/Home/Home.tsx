@@ -1,6 +1,6 @@
 import { Box, Typography } from '@mui/material';
 
-export function Home() {
+export default function Home() {
     return (
         <Box sx={{ 
             width: '100%',

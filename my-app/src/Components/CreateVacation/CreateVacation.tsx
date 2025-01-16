@@ -8,7 +8,7 @@ import { fetchCountries } from '../../api/countryApi';
 import { ICountry } from '../../models';
 import { createVacation, updateVacation } from '../../api/vacationApi';
 
-export const CreateVacation = () => {
+export default function CreateVacation() {
     const navigate = useNavigate();
     const [error, setError] = useState<string | null>(null);
     const [countries, setCountries] = useState<ICountry[]>([]);
@@ -230,4 +230,4 @@ export const CreateVacation = () => {
             </Box>
         </Container>
     );
-}; 
+} 

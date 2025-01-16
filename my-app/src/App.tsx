@@ -1,11 +1,14 @@
 import { AuthProvider } from "./Context/AuthContext";
+import { ThemeProvider } from "./Context/ThemeContext";
 import { Layout } from "./LayoutArea/Layout/Layout";
 
 function App() {
     return (
-        <AuthProvider>
-            <Layout />
-        </AuthProvider>
+        <ThemeProvider>
+            <AuthProvider>
+                <Layout />
+            </AuthProvider>
+        </ThemeProvider>
     );
 }
 

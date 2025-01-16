@@ -10,6 +10,9 @@ import MenuIcon from '@mui/icons-material/Menu';
 import LogoutIcon from '@mui/icons-material/Logout';
 import AddIcon from '@mui/icons-material/Add';
 import { useState, useContext } from 'react';
+import Brightness4Icon from '@mui/icons-material/Brightness4';
+import Brightness7Icon from '@mui/icons-material/Brightness7';
+import { useTheme } from '../../Context/ThemeContext';
 
 interface MenuItem {
     text: string;
@@ -22,6 +25,7 @@ export function Layout() {
     const navigate = useNavigate();
     const [drawerOpen, setDrawerOpen] = useState(false);
     const auth = useContext(AuthContext);
+    const { toggleTheme, mode } = useTheme();
 
     const getMenuItems = (): MenuItem[] => {
         const baseItems: MenuItem[] = [
@@ -151,6 +155,14 @@ export function Layout() {
                             </Button>
                         </>
                     )}
+
+                    <IconButton 
+                        color="inherit" 
+                        onClick={toggleTheme}
+                        sx={{ ml: 1 }}
+                    >
+                        {mode === 'dark' ? <Brightness7Icon /> : <Brightness4Icon />}
+                    </IconButton>
                 </Toolbar>
             </AppBar>
 
@@ -201,7 +213,8 @@ export function Layout() {
                     flex: 1,
                     overflow: 'auto',
                     overflowX: 'hidden',
-                    p: 0
+                    p: 0,
+                    height: 'calc(100vh - 64px)'
                 }}
             >
                 <Routing />
