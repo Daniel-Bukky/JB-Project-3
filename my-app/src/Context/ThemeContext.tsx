@@ -10,7 +10,11 @@ type ThemeContextType = {
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export const ThemeProvider = ({ children }: { children: ReactNode }) => {
-    const [mode, setMode] = useState<'light' | 'dark'>('light');
+    const [mode, setMode] = useState<'light' | 'dark'>(() => {
+        // Get saved theme from localStorage or default to 'light'
+        const savedTheme = localStorage.getItem('theme');
+        return (savedTheme === 'light' || savedTheme === 'dark') ? savedTheme : 'light';
+    });
 
     const theme = createTheme({
         palette: {
@@ -19,7 +23,11 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
     });
 
     const toggleTheme = () => {
-        setMode((prevMode) => (prevMode === 'light' ? 'dark' : 'light'));
+        setMode((prevMode) => {
+            const newMode = prevMode === 'light' ? 'dark' : 'light';
+            localStorage.setItem('theme', newMode); // Save to localStorage
+            return newMode;
+        });
     };
 
     return (
