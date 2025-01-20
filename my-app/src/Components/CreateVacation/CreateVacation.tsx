@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { TextField, Button, Container, Typography, Box, Alert, MenuItem } from '@mui/material';
+import { TextField, Button, Container, Typography, Box, Alert, MenuItem, ImageList, ImageListItem } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -23,6 +23,22 @@ export default function CreateVacation() {
         end_date: null as Date | null,
         country_id: '',
     });
+
+    const [availableImages] = useState([
+        'australiapic.jpg',
+        'francepic.jpg',
+        'gbpic.jpg',
+        'icelandpic.jpg',
+        'israelpic.jpg',
+        'italypic.jpg',
+        'japanpic.jpg',
+        'newzealandpic.jpg',
+        'portugalpic.jpg',
+        'spainpic.jpg',
+        'thailandpic.jpg',
+        'usapic.jpg',
+        'canadapic.jpg'
+    ]);
 
     useEffect(() => {
         const editData = sessionStorage.getItem('editVacation');
@@ -85,7 +101,7 @@ export default function CreateVacation() {
             const vacationData = {
                 description: formData.description,
                 price: Number(formData.price),
-                image_url: formData.image_url + '.jpg',
+                image_url: formData.image_url,
                 start_date: new Date(formData.start_date.setHours(12, 0, 0, 0)),
                 end_date: new Date(formData.end_date.setHours(12, 0, 0, 0)),
                 country_id: Number(formData.country_id)
@@ -208,15 +224,41 @@ export default function CreateVacation() {
                         onChange={handleChange}
                     />
 
-                    <TextField
-                        margin="normal"
-                        required
-                        fullWidth
-                        name="image_url"
-                        label="Image URL"
-                        value={formData.image_url}
-                        onChange={handleChange}
-                    />
+                    <Typography variant="subtitle1" sx={{ mt: 2, mb: 1 }}>
+                        Select an Image
+                    </Typography>
+                    
+                    <ImageList sx={{ width: '100%', height: 250, border: '1px solid #eee', borderRadius: 1 }} cols={2} rowHeight={120}>
+                        {availableImages.map((img) => (
+                            <ImageListItem 
+                                key={img}
+                                sx={{
+                                    cursor: 'pointer',
+                                    padding: 1,
+                                    border: formData.image_url === img ? '2px solid #1976d2' : 'none',
+                                    borderRadius: 1,
+                                    '&:hover': {
+                                        backgroundColor: '#f5f5f5'
+                                    }
+                                }}
+                                onClick={() => setFormData(prev => ({
+                                    ...prev,
+                                    image_url: img
+                                }))}
+                            >
+                                <img
+                                    src={img}
+                                    alt="Vacation destination"
+                                    loading="lazy"
+                                    style={{ 
+                                        height: '100%', 
+                                        objectFit: 'cover',
+                                        borderRadius: 4
+                                    }}
+                                />
+                            </ImageListItem>
+                        ))}
+                    </ImageList>
 
                     <Button
                         type="submit"

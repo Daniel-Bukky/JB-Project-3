@@ -1,7 +1,7 @@
 import { AppBar, Box, Button, Container, Toolbar, IconButton, Drawer, List, ListItem, ListItemIcon, ListItemText, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import { Routing } from "../../Routing/Routing";
-import { AuthContext } from "../../Context/AuthContext";
+import { Routing } from "../Routing/Routing";
+import { AuthContext } from "../Context/AuthContext";
 import HomeIcon from '@mui/icons-material/Home';
 import BeachAccessIcon from '@mui/icons-material/BeachAccess';
 import LoginIcon from '@mui/icons-material/Login';
@@ -12,7 +12,7 @@ import AddIcon from '@mui/icons-material/Add';
 import { useState, useContext } from 'react';
 import Brightness4Icon from '@mui/icons-material/Brightness4';
 import Brightness7Icon from '@mui/icons-material/Brightness7';
-import { useTheme } from '../../Context/ThemeContext';
+import { useTheme } from '../Context/ThemeContext';
 
 interface MenuItem {
     text: string;

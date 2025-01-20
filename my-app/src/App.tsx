@@ -1,6 +1,6 @@
 import { AuthProvider } from "./Context/AuthContext";
 import { ThemeProvider } from "./Context/ThemeContext";
-import { Layout } from "./LayoutArea/Layout/Layout";
+import { Layout } from "./Layout/Layout";
 
 function App() {
     return (
