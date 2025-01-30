@@ -21,25 +21,21 @@ app.config['JWT_DECODE_ALGORITHMS'] = ['HS256']
 app.config['JWT_DECODE_AUDIENCE'] = None
 app.config['JWT_DECODE_ISSUER'] = None
 
+# Enable CORS for all routes - simpler configuration
+CORS(app, 
+     origins="http://localhost:5173",
+     supports_credentials=True)
 
+# Configure CORS headers for all responses
+@app.after_request
+def after_request(response):
+    response.headers.add('Access-Control-Allow-Origin', 'http://localhost:5173')
+    response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
+    response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS')
+    response.headers.add('Access-Control-Allow-Credentials', 'true')
+    return response
 
 jwt = JWTManager(app)
-
-# Enable CORS for the app
-CORS(app, 
-     resources={r"/*": {
-         "origins": ["http://localhost:5173"],
-         "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-         "allow_headers": ["Content-Type", "Authorization", "Access-Control-Allow-Origin"],
-         "expose_headers": ["Content-Type", "Authorization"],
-         "supports_credentials": True,
-         "send_wildcard": False,
-         "max_age": 86400  # Cache preflight requests for 24 hours
-     }},
-     allow_headers=["Content-Type", "Authorization"],
-     expose_headers=["Content-Type", "Authorization"],
-     supports_credentials=True
-)
 
 @app.route('/user-data', methods=['GET'])
 @jwt_required()
@@ -50,7 +46,7 @@ def get_data():
     
     # If you need the full JWT payload
     # jwt_payload = get_jwt()
-    
+
     return jsonify({
         'message': 'Success',
         'user_id': current_user_id

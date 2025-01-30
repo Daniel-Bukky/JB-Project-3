@@ -34,3 +34,24 @@ def get_all_users():
     cur.close()
     conn.close()
     return users
+
+def get_user_by_id(user_id):
+    try:
+        conn = get_db_connection()
+        cur = conn.cursor()
+        
+        cur.execute("""
+            SELECT user_id, firstname, lastname, email, password, role_id 
+            FROM users 
+            WHERE user_id = %s
+        """, (user_id,))
+        
+        user = cur.fetchone()
+        
+        cur.close()
+        conn.close()
+        
+        return user
+    except Exception as e:
+        print(f"Database error: {str(e)}")
+        raise e

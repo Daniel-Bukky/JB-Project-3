@@ -20,25 +20,18 @@ export default function Login() {
     });
   };
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setError(null);
-
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (!auth) return;
+    
     try {
-      if (!formData.email || !formData.password) {
-        throw new Error('Please fill in all fields');
+      const response = await auth.login(formData.email, formData.password);
+      if (response) {  // If login successful, response will be the user info
+        navigate('/');
       }
-
-      if (!auth) {
-        throw new Error('Auth context is not available');
-      }
-
-      const user = await auth.login(formData.email, formData.password);
-      console.log('User after login:', user);
-      navigate('/');
-    } catch (err: any) {
-      setError(err.response?.data?.message || 'Login failed');
-      return;
+    } catch (error) {
+      console.error('Login failed:', error);
+      setError('Login failed. Please check your credentials.');
     }
   };
 

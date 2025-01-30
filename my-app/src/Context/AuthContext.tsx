@@ -1,8 +1,9 @@
-import { createContext, useState, ReactNode } from "react";
+import { createContext, useState, ReactNode, useEffect } from "react";
 import { IUser } from "../models/index";
 import { login, register } from "../api/authApi";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { getUserData } from "../api/dataApi";
 
 interface AuthContextType {
     user: IUser | null;
@@ -17,24 +18,60 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const [user, setUser] = useState<IUser | null>(null);
     const navigate = useNavigate();
 
+    // Check authentication on initial load
+    useEffect(() => {
+        const checkAuthStatus = async () => {
+            const token = localStorage.getItem('token');
+            if (token) {
+                try {
+                    // Set the token in axios headers
+                    axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+
+                    // Fetch user data to validate token and get user info
+                    const userData = await getUserData();
+                    
+                    if (userData) {
+                        const userInfo = {
+                            id: userData.id,
+                            firstname: userData.firstname,
+                            lastname: userData.lastname,
+                            role: userData.role
+                        };
+                        setUser(userInfo);
+                    } else {
+                        // If getUserData fails, log out
+                        logout();
+                    }
+                } catch (error) {
+                    console.error('Token validation failed:', error);
+                    logout();
+                }
+            }
+        };
+
+        checkAuthStatus();
+    }, []);
+
     const loginHandler = async (email: string, password: string) => {
         try {
             const response = await login(email, password);
             
             if (response.token) {
-                console.log('Setting token:', response.token);
                 localStorage.setItem('token', response.token);
                 axios.defaults.headers.common['Authorization'] = `Bearer ${response.token}`;
                 
-                const userData = {
-                    firstname: response.user.firstname,
-                    lastname: response.user.lastname,
-                    role: response.user.role,
-                    id: response.user.id
-                };
-                
-                setUser(userData);
-                return userData;
+                // Get full user data after setting token
+                const userData = await getUserData();
+                if (userData) {
+                    const userInfo = {
+                        id: userData.id,
+                        firstname: userData.firstname,
+                        lastname: userData.lastname,
+                        role: userData.role
+                    };
+                    setUser(userInfo);
+                    return userInfo;
+                }
             }
             return null;
         } catch (error) {
@@ -58,9 +95,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         }
     };
 
-    const logoutHandler = () => {
+    const logout = () => {
         setUser(null);
         localStorage.removeItem('token');
+        delete axios.defaults.headers.common['Authorization'];
         navigate('/');
     };
 
@@ -69,7 +107,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             user, 
             login: loginHandler, 
             register: registerHandler,
-            logout: logoutHandler 
+            logout 
         }}>
             {children}
         </AuthContext.Provider>

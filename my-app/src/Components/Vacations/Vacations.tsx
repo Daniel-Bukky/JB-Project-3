@@ -9,7 +9,6 @@ import { AuthContext } from "../../Context/AuthContext";
 import { useNavigate } from 'react-router-dom';
 import { fetchCountries } from "../../api/countryApi";
 import FavoriteIcon from '@mui/icons-material/Favorite';
-import { getUserData } from "../../api/dataApi";
 import { getLikesbyUserId, unlikeVacation, likeVacation } from "../../api/likesApi";
 
 export default function Vacations() {
@@ -38,21 +37,15 @@ export default function Vacations() {
 
     useEffect(() => {
         const initializeLikes = async () => {
-            const token = localStorage.getItem('token');
-            if (!token) {
-                console.log('No token found, skipping likes initialization');
+            // Skip if there's no token or no user ID
+            if (!auth?.user?.id) {
+                console.log('No user ID available, skipping likes initialization');
                 return;
             }
 
             try {
-                const userData = await getUserData();
-                if (!userData?.user_id) {
-                    console.log('No user data from getUserData');
-                    return;
-                }
-                
-                console.log('Fetching likes for user:', userData.user_id);
-                const likes = await getLikesbyUserId(userData.user_id);
+                console.log('Fetching likes for user:', auth.user.id);
+                const likes = await getLikesbyUserId(auth.user.id);
                 console.log('Received likes:', likes);
                 const likedVacationIds = likes.map((like: ILike) => like.vacation_id);
                 console.log('Mapped vacation IDs:', likedVacationIds);
@@ -61,8 +54,9 @@ export default function Vacations() {
                 console.error("Error fetching likes:", error);
             }
         };
+
         initializeLikes();
-    }, [auth?.user]);
+    }, [auth?.user?.id]); // Only depend on user ID instead of the whole user object
 
     useEffect(() => {
         console.log('Auth user changed:', auth?.user);
@@ -96,22 +90,22 @@ export default function Vacations() {
     };
 
     const handleLike = async (vacationId: number) => {
-        try {
-            const userData = await getUserData();
-            if (!userData?.user_id) {
-                console.error('No user data available');
-                return;
-            }
+        // Skip getUserData call since we already have the user ID
+        if (!auth?.user?.id) {
+            console.error('No user ID available');
+            return;
+        }
 
+        try {
             if (likedVacations.includes(vacationId)) {
                 // Unlike
                 console.log('unliked');
-                await unlikeVacation(userData.user_id, vacationId);
+                await unlikeVacation(auth.user.id, vacationId);
                 setLikedVacations(prev => prev.filter(id => id !== vacationId));
             } else {
                 // Like
                 console.log('liked');
-                await likeVacation({ user_id: userData.user_id, vacation_id: vacationId });
+                await likeVacation({ user_id: auth.user.id, vacation_id: vacationId });
                 setLikedVacations(prev => [...prev, vacationId]);
             }
         } catch (error) {

@@ -1,7 +1,7 @@
 from flask import jsonify
 from flask_bcrypt import Bcrypt
 from flask_jwt_extended import create_access_token
-from models.user_model import register_user, get_user_by_email, get_all_users
+from models.user_model import register_user, get_user_by_email, get_all_users, get_user_by_id
 
 bcrypt = Bcrypt()
 def create_user(data):
@@ -35,6 +35,40 @@ def login_user(data):
 
     token = create_access_token(identity=str(user_id))
     return jsonify({"token": token, "firstname": firstname, "lastname":lastname, "role": role}), 200
+
+def fetch_user_by_id(id):
+    try:
+        print(f"Fetching user with ID: {id}")
+        user_id = int(id)
+        user = get_user_by_id(user_id)
+        print(f"Retrieved user: {user}")
+        
+        if user is None:
+            print("User not found")
+            return jsonify({"error": "User not found"}), 404
+            
+        try:
+            user_id, firstname, lastname, email, hashed_password, role_id = user
+            response = {
+                "id": user_id,
+                "firstname": firstname,
+                "lastname": lastname,
+                "email": email,
+                "role": role_id
+            }
+            print(f"Sending response: {response}")
+            return jsonify(response), 200
+        except (ValueError, TypeError) as e:
+            print(f"Error unpacking user data: {str(e)}")
+            print(f"User data received: {user}")
+            return jsonify({"error": "Invalid user data format"}), 500
+            
+    except ValueError as ve:
+        print(f"ValueError: {str(ve)}")
+        return jsonify({"error": "Invalid user ID format"}), 400
+    except Exception as e:
+        print(f"Error fetching user: {str(e)}")
+        return jsonify({"error": "Internal server error"}), 500
 
 def fetch_all_users():
     users = get_all_users()
