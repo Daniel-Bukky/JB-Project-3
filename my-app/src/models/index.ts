@@ -13,7 +13,6 @@ export interface IUser {
     firstname: string;
     lastname: string;
     role: number;
-    // email and password are not needed in the user state
 }
 
 export interface ICountry {

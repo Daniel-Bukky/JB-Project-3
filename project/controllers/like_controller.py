@@ -1,5 +1,7 @@
 from flask import jsonify
 from models.like_model import add_like, get_all_likes, get_like, delete_like
+from models.vacation_model import get_all_vacations
+from models.country_model import get_all_countries
 
 def create_like(data):
     try:
@@ -48,3 +50,7 @@ def del_like(user_id, vacation_id):
     except Exception as e:
         print(f"Error deleting like: {str(e)}")
         return jsonify({"error": "Internal server error", "details": str(e)}), 500
+
+def get_like_statistics():
+    likes = get_all_likes()
+    return jsonify({"likes": len(likes)}), 200

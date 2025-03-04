@@ -1,4 +1,4 @@
-import { fetchVacations, deleteVacation } from "../../api/vacationApi";
+import { deleteVacation } from "../../api/vacationApi";
 import { useEffect, useState, useContext } from "react";
 import { IVacation, ICountry, ILike } from "../../models/index";
 import { Box, Card, CardContent, CardMedia, Container, Typography, Button, CardActions, IconButton } from '@mui/material';
@@ -18,13 +18,18 @@ export default function Vacations() {
     const auth = useContext(AuthContext);
     const navigate = useNavigate();
 
-    const getAllVacations = async () => {
-        let data = await fetchVacations();
-        setVacations(data);
+    const fetchVacationsData = async () => {
+        try {
+            const response = await fetch('http://localhost:5000/vacations');
+            const data = await response.json();
+            setVacations(data);
+        } catch (error) {
+            console.error('Error fetching vacations:', error);
+        }
     };
 
     useEffect(() => {
-        getAllVacations();
+        fetchVacationsData();
     }, []);
 
     useEffect(() => {
@@ -76,7 +81,7 @@ export default function Vacations() {
             try {
                 await deleteVacation(id);
                 // Refresh the vacations list after deletion
-                getAllVacations();
+                fetchVacationsData();
             } catch (err) {
                 console.error('Failed to delete vacation:', err);
                 alert('Failed to delete vacation');

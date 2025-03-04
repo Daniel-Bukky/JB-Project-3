@@ -1,0 +1,45 @@
+version: '3.8'
+
+services:
+  frontend:
+    container_name: vacation-frontend
+    build:
+      context: ./my-app
+      dockerfile: Dockerfile
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./my-app:/app
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development
+    depends_on:
+      - backend
+    networks:
+      - vacation-network
+
+  backend:
+    container_name: vacation-backend
+    build:
+      context: ./project
+      dockerfile: Dockerfile
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./project:/app
+      - ./project/.env:/app/.env
+    env_file:
+      - ./project/.env
+    environment:
+      - FLASK_APP=app.py
+      - FLASK_ENV=development
+      - FLASK_DEBUG=1
+    networks:
+      - vacation-network
+
+networks:
+  vacation-network:
+    driver: bridge
+
+volumes:
+  mysql_data: 

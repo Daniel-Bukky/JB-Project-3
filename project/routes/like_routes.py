@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from controllers.like_controller import create_like, fetch_all_likes, fetch_likes_by_user_id, del_like
+from controllers.like_controller import create_like, fetch_all_likes, fetch_likes_by_user_id, del_like, get_like_statistics
 
 like_bp = Blueprint("like_routes", __name__)
 
@@ -38,7 +38,9 @@ def delete_like_route(user_id, vacation_id):
         print(f"Route error: {str(e)}")
         return jsonify({"error": "Route error", "details": str(e)}), 500
 
-
+@like_bp.route("/like/statistics", methods=["GET"])
+def get_like_statistics_route():
+    return get_like_statistics()
 
 
 

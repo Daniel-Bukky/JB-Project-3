@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required
-from controllers.user_controller import create_user, login_user, fetch_all_users, fetch_user_by_id
+from controllers.user_controller import create_user, login_user, fetch_all_users, fetch_user_by_id, get_user_statistics
 
 user_bp = Blueprint("user_routes", __name__)
 
@@ -22,3 +22,8 @@ def get_user_by_id(user_id):
 @jwt_required()
 def get_all_users_route():
     return fetch_all_users()
+
+@user_bp.route("/user/statistics", methods=["GET"])
+def get_user_statistics_route():
+    return get_user_statistics()
+

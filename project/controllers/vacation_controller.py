@@ -31,6 +31,52 @@ def fetch_all_vacations():
     return jsonify([{"id": vacation[0], "country_id": vacation[1] , "start_date": vacation[2] ,"end_date": vacation[3] ,"description":vacation[4],"price": vacation[5] ,"image_url": vacation[6] ,} for vacation in vacations]), 200
 
 
+def get_vacation_statistics():
+    try:
+        # Get raw vacations data
+        vacations = get_all_vacations()
+        today = date.today()
+        
+        # Initialize categories
+        past_vacations = []
+        ongoing_vacations = []
+        future_vacations = []
+        
+        # Categorize each vacation
+        for vacation in vacations:
+            # Convert vacation data to dictionary
+            vacation_dict = {
+                "id": vacation[0],
+                "country_id": vacation[1],
+                "start_date": str(vacation[2]),  # Convert date to string for JSON
+                "end_date": str(vacation[3]),
+                "description": vacation[4],
+                "price": float(vacation[5]),
+                "image_url": vacation[6]
+            }
+            
+            # Convert string dates to date objects if they're strings
+            start_date = vacation[2] if isinstance(vacation[2], date) else datetime.strptime(vacation[2], '%Y-%m-%d').date()
+            end_date = vacation[3] if isinstance(vacation[3], date) else datetime.strptime(vacation[3], '%Y-%m-%d').date()
+            
+            # Categorize based on dates
+            if end_date < today:
+                past_vacations.append(vacation_dict)
+            elif start_date > today:
+                future_vacations.append(vacation_dict)
+            else:
+                ongoing_vacations.append(vacation_dict)
+        
+        return jsonify({
+            "past_vacations": past_vacations,
+            "ongoing_vacations": ongoing_vacations,
+            "future_vacations": future_vacations
+        }), 200
+        
+    except Exception as e:
+        print(f"Error fetching vacation statistics: {str(e)}")
+        return jsonify({"error": "Failed to fetch vacation statistics"}), 500
+
 def fetch_vacation_by_id(id):
     vacation = get_vacation_by_id(id)
     if not vacation:

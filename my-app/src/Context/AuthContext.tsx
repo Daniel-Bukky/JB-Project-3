@@ -1,4 +1,4 @@
-import { createContext, useState, ReactNode, useEffect } from "react";
+import { createContext, useState, ReactNode, useEffect, useContext } from "react";
 import { IUser } from "../models/index";
 import { login, register } from "../api/authApi";
 import { useNavigate } from "react-router-dom";
@@ -12,7 +12,7 @@ interface AuthContextType {
     logout: () => void;
 }
 
-export const AuthContext = createContext<AuthContextType | undefined>(undefined);
+export const AuthContext = createContext<AuthContextType | null>(null);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const [user, setUser] = useState<IUser | null>(null);
@@ -114,10 +114,4 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     );
 };
 
-// export const useAuth = () => {
-//     const context = useContext(AuthContext);
-//     if (!context) {
-//         throw new Error("useAuth must be used within an AuthProvider");
-//     }
-//     return context;
-// };
+export const useAuth = () => useContext(AuthContext);

@@ -80,3 +80,16 @@ def fetch_all_users():
         "email": user[3],
         "hashed_password": user[4]
     } for user in users]), 200
+
+def get_user_statistics():
+    try:
+        users = get_all_users()  # Assuming this returns a list of users
+        total_users = len(users)
+        
+        return jsonify({
+            "total_users": total_users
+        }), 200
+        
+    except Exception as e:
+        print(f"Error fetching user statistics: {str(e)}")
+        return jsonify({"error": "Failed to fetch user statistics"}), 500

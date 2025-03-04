@@ -1,3 +1,9 @@
+from dotenv import load_dotenv
+import os
+
+# Load environment variables at the very beginning
+load_dotenv()
+
 from flask import Flask, request, jsonify
 from flask_jwt_extended import (
     JWTManager, 
@@ -10,10 +16,14 @@ from routes.country_routes import country_bp
 from routes.user_routes import user_bp
 from routes.vacation_routes import vacation_bp
 from routes.like_routes import like_bp
-
 from flask_cors import CORS
 
 app = Flask(__name__)
+
+# Print environment variables for debugging (remove in production)
+print("DB_HOST:", os.getenv('DB_HOST'))
+print("DB_NAME:", os.getenv('DB_NAME'))
+print("DB_USER:", os.getenv('DB_USER'))
 
 app.config["JWT_SECRET_KEY"] = "your_jwt_secret_key"
 # In your Flask app configuration
@@ -21,9 +31,9 @@ app.config['JWT_DECODE_ALGORITHMS'] = ['HS256']
 app.config['JWT_DECODE_AUDIENCE'] = None
 app.config['JWT_DECODE_ISSUER'] = None
 
-# Enable CORS for all routes - simpler configuration
+# Enable CORS for all routes with more permissive settings for debugging
 CORS(app, 
-     origins="http://localhost:5173",
+     resources={r"/*": {"origins": ["http://localhost:5173"]}},
      supports_credentials=True)
 
 # Configure CORS headers for all responses
@@ -60,4 +70,5 @@ app.register_blueprint(vacation_bp)
 app.register_blueprint(like_bp)
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host='0.0.0.0', port=port, debug=True)

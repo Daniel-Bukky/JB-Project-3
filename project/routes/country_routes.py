@@ -1,5 +1,5 @@
 from flask import Blueprint, request
-from controllers.country_controller import create_country, fetch_all_countries , fetch_country_by_id, del_country_by_id, update_country
+from controllers.country_controller import create_country, fetch_all_countries , fetch_country_by_id, del_country_by_id, update_country, get_country_statistics
 
 country_bp = Blueprint("country_routes", __name__)
 
@@ -24,6 +24,10 @@ def delete_country_by_id(id):
 @country_bp.route("/country/<int:id>", methods=["PUT"])
 def update_country_by_id(id):
     return update_country(id, request.json)
+
+@country_bp.route("/country/statistics", methods=["GET"])
+def get_country_statistics_route():
+    return get_country_statistics()
 
 
 

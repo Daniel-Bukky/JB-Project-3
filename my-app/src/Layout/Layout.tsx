@@ -13,6 +13,8 @@ import { useState, useContext } from 'react';
 import Brightness4Icon from '@mui/icons-material/Brightness4';
 import Brightness7Icon from '@mui/icons-material/Brightness7';
 import { useTheme } from '../Context/ThemeContext';
+import BarChartIcon from '@mui/icons-material/BarChart';
+import InfoIcon from '@mui/icons-material/Info';
 
 interface MenuItem {
     text: string;
@@ -33,6 +35,14 @@ export function Layout() {
             { text: 'Vacations', icon: <BeachAccessIcon />, path: '/vacations' },
         ];
 
+        if (auth?.user) {
+            baseItems.push({ 
+                text: 'Statistics', 
+                icon: <BarChartIcon />, 
+                path: '/statistics' 
+            });
+        }
+
         if (auth?.user?.role === 1) {
             baseItems.push({ 
                 text: 'Create Vacation', 
@@ -40,6 +50,12 @@ export function Layout() {
                 path: '/create-vacation' 
             });
         }
+
+        baseItems.push({ 
+            text: 'Credits', 
+            icon: <InfoIcon />, 
+            path: '/credits' 
+        });
 
         const authItems: MenuItem[] = auth?.user ? [
             { text: 'Logout', icon: <LogoutIcon />, path: '/', onClick: () => auth.logout?.() }
@@ -107,6 +123,16 @@ export function Layout() {
                     >
                         Vacations
                     </Button>
+
+                    {auth?.user && (
+                        <Button
+                            color="inherit"
+                            onClick={() => navigate('/statistics')}
+                            startIcon={<BarChartIcon />}
+                        >
+                            Statistics
+                        </Button>
+                    )}
 
                     {auth?.user?.role === 1 && (
                         <Button
